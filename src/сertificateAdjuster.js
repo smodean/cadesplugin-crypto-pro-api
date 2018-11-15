@@ -90,7 +90,7 @@ CertificateAdjuster.friendlyIssuerInfo = function friendlyIssuerInfo() {
  * @description функция формирует ключи и значения в зависимости от переданного параметра
  */
 CertificateAdjuster.possibleInfo = function possibleInfo(subjectIssuer) {
-    const attrs = {
+  const attrs = {
     'UnstructuredName=': 'Неструктурированное имя',
     'E=': 'Email',
     'C=': 'Страна',
@@ -110,25 +110,23 @@ CertificateAdjuster.possibleInfo = function possibleInfo(subjectIssuer) {
   };
 
   switch (subjectIssuer) {
-      case 'subjectInfo':
-      return {
-        ...attrs,
-        'SN=': 'Фамилия',
-        'G=': 'Имя/Отчество',
-        'CN=': 'Владелец',
-        'OU=': 'Отдел/подразделение',
-      };
-      case 'issuerInfo':
-      return {
-        ...attrs,
-        'CN=': 'Удостоверяющий центр',
-        'OU=': 'Тип',
-      };
-  
+    case 'subjectInfo':
+      attrs['SN='] = 'Фамилия';
+      attrs['G='] = 'Имя/Отчество';
+      attrs['CN='] = 'Владелец';
+      attrs['OU='] = 'Отдел/подразделение';
+
+      return attrs;
+    case 'issuerInfo':
+      attrs['CN='] = 'Удостоверяющий центр';
+      attrs['OU='] = 'Тип';
+
+      return attrs;
+
     default:
       throw new Error('Не верно указан кейс получаемых данных');
   }
-}
+};
 
 /**
  * @function friendlyDate
