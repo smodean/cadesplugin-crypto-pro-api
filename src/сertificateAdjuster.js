@@ -40,11 +40,8 @@ CertificateAdjuster.friendlyInfo = function friendlyInfo(subjectIssuer) {
     throw new Error('Не верно указан аттрибут');
   }
 
-  const { from, to } = this.validPeriod;
   const subjectIssuerArr = this[subjectIssuer].split(', ');
   const _possibleInfo = this.possibleInfo(subjectIssuer);
-  const capitalize = subjectIssuer.charAt(0).toUpperCase().concat(subjectIssuer.slice(1));
-
   const formedSubjectIssuerInfo = subjectIssuerArr.map(tag => {
     const tagArr = tag.split('=');
     tagArr[0] = `${tagArr[0]}=`;
@@ -55,19 +52,13 @@ CertificateAdjuster.friendlyInfo = function friendlyInfo(subjectIssuer) {
     };
   });
 
-  return {
-    [`friendly${capitalize}`]: formedSubjectIssuerInfo,
-    validPeriod: {
-      from: this.friendlyDate(from),
-      to: this.friendlyDate(to),
-    },
-  };
+  return formedSubjectIssuerInfo;
 }
 
 /**
  * @method friendlySubjectInfo
- * @returns {Object}
- * @description возвращает распаршенную информацию об объекте subjectInfo
+ * @returns {Array}
+ * @description возвращает распаршенную информацию о строке subjectInfo
  */
 CertificateAdjuster.friendlySubjectInfo = function friendlySubjectInfo() {
   return this.friendlyInfo('subjectInfo');
@@ -75,11 +66,25 @@ CertificateAdjuster.friendlySubjectInfo = function friendlySubjectInfo() {
 
 /**
  * @method friendlyIssuerInfo
- * @returns {Object}
- * @description возвращает распаршенную информацию об объекте issuerInfo
+ * @returns {Array}
+ * @description возвращает распаршенную информацию о строке issuerInfo
  */
 CertificateAdjuster.friendlyIssuerInfo = function friendlyIssuerInfo() {
   return this.friendlyInfo('issuerInfo');
+}
+
+/**
+ * @method friendlyValidPeriod
+ * @returns {Object}
+ * @description возвращает распаршенную информацию об объекте validPeriod
+ */
+CertificateAdjuster.friendlyValidPeriod = function friendlyValidPeriod() {
+  const { from, to } = this.validPeriod;
+
+  return {
+    from: this.friendlyDate(from),
+    to: this.friendlyDate(to),
+  }
 }
 
 /**
