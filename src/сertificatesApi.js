@@ -4,7 +4,7 @@
 
 const CertificateAdjuster = require('./сertificateAdjuster');
 const cadescomMethods = require('./cadescomMethods');
-const xmlAlgorithm = require('./algorithm');
+const { doXmlSitnatureAlgorithm, doXmlSitnatureType } = require('./xmlSitnatureMethods');
 const {
   CAPICOM: {
     CAPICOM_CURRENT_USER_STORE,
@@ -178,6 +178,7 @@ CertificatesApi.getCert = async function getCert(thumbprint) {
  * @param {String} base64 строка в формате base64
  * @param {Boolean} type тип подписи true=откреплённая false=прикреплённая
  * @throws {Error}
+ * @description подпись строки в формате base64
  */
 CertificatesApi.signBase64 = async function signBase64(thumbprint, base64, type = true) {
   try {
@@ -211,21 +212,25 @@ CertificatesApi.signBase64 = async function signBase64(thumbprint, base64, type 
  * @async
  * @method signXml
  * @param {String} thumbprint значение сертификата
- * @param {String} xml
+ * @param {String} xml строка в формате XML
+ * @param {Number} CADESCOM_XML_SIGNATURE_TYPE тип подписи 0=Вложенная 1=Оборачивающая 2=по шаблону @default 0
+ * @description подписание XML документа
  */
-CertificatesApi.signXml = async function signXml(thumbprint, xml) {
+CertificatesApi.signXml = async function signXml(thumbprint, xml, cadescomXmlSignatureType = CADESCOM_XML_SIGNATURE_TYPE_ENVELOPED) {
   try {
     const currentCert = await this.currentCadesCert(thumbprint);
     const publicKey = await currentCert.PublicKey();
     const algorithm = await publicKey.Algorithm;
     const value = await algorithm.Value;
-    const { signAlgorithm, hashAlgorithm } = xmlAlgorithm(value);
     const oSigner = await cadescomMethods.oSigner();
     const oSignerXML = await cadescomMethods.oSignedXml();
 
+    const { signAlgorithm, hashAlgorithm } = doXmlSitnatureAlgorithm(value);
+    const xmlSitnatureType = doXmlSitnatureType(cadescomXmlSignatureType);
+
     await oSigner.propset_Certificate(currentCert);
     await oSignerXML.propset_Content(xml);
-    await oSignerXML.propset_SignatureType(CADESCOM_XML_SIGNATURE_TYPE_ENVELOPED);
+    await oSignerXML.propset_SignatureType(xmlSitnatureType);
     await oSignerXML.propset_SignatureMethod(signAlgorithm);
     await oSignerXML.propset_DigestMethod(hashAlgorithm);
 
