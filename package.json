@@ -1,0 +1,26 @@
+{
+  "name": "cadesplugin-crypto-pro-api",
+  "version": "0.9.4",
+  "description": "Библиотека предоставляет API для работы c cadesplugin и Крипто Про",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "smodean <smodean73@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "cadesplugin",
+    "Крипто Про",
+    "криптоПро",
+    "кадесплагин",
+    "cades",
+    "ЭЦП",
+    "Электонная подпись",
+    "Электронная цифровая подпись",
+    "cadesplugin-crypto-pro-api"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smodean/cadesplugin-crypto-pro-api"
+  }
+}
