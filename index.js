@@ -24,7 +24,7 @@ const cadespluginOnload = (async function cadespluginOnload() {
       about,
     };
   } catch (error) {
-    throw new Error(error.message);
+    throw new Error(error);
   }
 })();
 
