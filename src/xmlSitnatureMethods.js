@@ -23,7 +23,7 @@ const {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @method template
+ * @function template
  * @param {String} signAlgorithm алгоритм подписи
  */
 function template(signAlgorithm) {
@@ -39,27 +39,14 @@ function template(signAlgorithm) {
   };
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// NOTE Object create
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 /**
- * @description объект предоставляет методы для выбора опций при подписании XML документа
- */
-const xmlSitnatureMethods = Object.create(null);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// NOTE Methods
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * @method xmlSitnatureType
+ * @function xmlSitnatureType
  * @param {Number} CADESCOM_XML_SIGNATURE_TYPE тип подписи XML кокумента
  * @returns {Number}
  * @throws {Error}
  * @description выбирает значение константы для типа подписи XML документа
  */
-xmlSitnatureMethods.doXmlSitnatureType = function doXmlSitnatureType(CADESCOM_XML_SIGNATURE_TYPE) {
+function doXmlSitnatureType(CADESCOM_XML_SIGNATURE_TYPE) {
   switch (CADESCOM_XML_SIGNATURE_TYPE) {
     case 0:
       // Вложенная подпись
@@ -83,13 +70,13 @@ xmlSitnatureMethods.doXmlSitnatureType = function doXmlSitnatureType(CADESCOM_XM
 }
 
 /**
- * @method doXmlSitnatureAlgorithm
+ * @function doXmlSitnatureAlgorithm
  * @param {String} value алгоритм сертификата
  * @returns {Object}
  * @throws {Error}
  * @description определяет алгоритм подписания XML документа в зависимости от алгоритма сертификата
  */
-xmlSitnatureMethods.doXmlSitnatureAlgorithm = function doXmlSitnatureAlgorithm(value) {
+function doXmlSitnatureAlgorithm(value) {
   switch (value) {
     case '1.2.643.2.2.19':
       // алгоритм ГОСТ Р 34.10-2001
@@ -112,4 +99,7 @@ xmlSitnatureMethods.doXmlSitnatureAlgorithm = function doXmlSitnatureAlgorithm(v
 // NOTE Exports
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-module.exports = Object.create(xmlSitnatureMethods);
+module.exports = {
+  doXmlSitnatureType,
+  doXmlSitnatureAlgorithm,
+};
