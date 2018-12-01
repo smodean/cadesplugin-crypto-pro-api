@@ -21,38 +21,29 @@ const {
 } = require('./constants');
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// NOTE Object create
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * @description объект предоставляет методы для получения данных о сертификатах, а так же для их подписания
- */
-const CertificatesApi = Object.create(null);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// NOTE Methods
+// NOTE Functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @async
- * @method about
+ * @function about
  * @description выводит информацию
  */
-CertificatesApi.about = async function about() {
+async function about() {
   try {
     return await cadescomMethods.oAbout();
   } catch (error) {
     throw new Error(error.message);
   }
-};
+}
 
 /**
  * @async
- * @method getCertsList
+ * @function getCertsList
  * @throws {Error}
  * @description получает массив валидных сертификатов
  */
-CertificatesApi.getCertsList = async function getCertsList() {
+async function getCertsList() {
   try {
     const oStore = await cadescomMethods.oStore();
     await oStore.Open(CAPICOM_CURRENT_USER_STORE, CAPICOM_MY_STORE, CAPICOM_STORE_OPEN_MAXIMUM_ALLOWED);
@@ -66,7 +57,7 @@ CertificatesApi.getCertsList = async function getCertsList() {
     const findCertificate = await certificates.Find(CAPICOM_CERTIFICATE_FIND_TIME_VALID);
     const findCertsWithPrivateKey = await findCertificate.Find(
       CAPICOM_CERTIFICATE_FIND_EXTENDED_PROPERTY,
-      CAPICOM_PROPID_KEY_PROV_INFO,
+      CAPICOM_PROPID_KEY_PROV_INFO
     );
 
     const count = await findCertsWithPrivateKey.Count;
@@ -75,27 +66,42 @@ CertificatesApi.getCertsList = async function getCertsList() {
       throw new Error('Нет сертификатов с приватным ключём');
     }
 
-    const createCertList = [];
+    const countArray = Array(count).fill(null);
 
-    for (let index = 0; index < count; index++) {
-      const certApi = await findCertsWithPrivateKey.Item(index + 1);
-      const сertificateAdjuster = Object.create(CertificateAdjuster);
+    const createCertList = await Promise.all(
+      /**
+       * @async
+       * @function
+       * @prop {Null} _ неиспользуемая величина
+       * @prop {Number} index
+       * Порядок элемента в массиве.
+       * В функции используется index + 1, так как в cadesplugin счёт элементов ведётся с 1, а в итераторе с 0
+       * @description итерируемая асинхронная функция, возвращающая массив из промисов
+       */
+      countArray.map(async (_, index) => {
+        try {
+          const certApi = await findCertsWithPrivateKey.Item(index + 1);
 
-      сertificateAdjuster.init({
-        certApi,
-        issuerInfo: await certApi.IssuerName,
-        privateKey: await certApi.PrivateKey,
-        serialNumber: await certApi.SerialNumber,
-        subjectInfo: await certApi.SubjectName,
-        thumbprint: await certApi.Thumbprint,
-        validPeriod: {
-          from: await certApi.ValidFromDate,
-          to: await certApi.ValidToDate,
-        },
-      });
+          const сertificateAdjuster = Object.create(CertificateAdjuster);
+          сertificateAdjuster.init({
+            certApi,
+            issuerInfo: await certApi.IssuerName,
+            privateKey: await certApi.PrivateKey,
+            serialNumber: await certApi.SerialNumber,
+            subjectInfo: await certApi.SubjectName,
+            thumbprint: await certApi.Thumbprint,
+            validPeriod: {
+              from: await certApi.ValidFromDate,
+              to: await certApi.ValidToDate,
+            },
+          });
 
-      createCertList.push(сertificateAdjuster);
-    }
+          return сertificateAdjuster;
+        } catch (error) {
+          throw new Error(`При переборе сертификатов произошла ошибка: ${error.message}`);
+        }
+      })
+    );
 
     oStore.Close();
 
@@ -103,16 +109,16 @@ CertificatesApi.getCertsList = async function getCertsList() {
   } catch (error) {
     throw new Error(error.message);
   }
-};
+}
 
 /**
  * @async
- * @method currentCadesCert
+ * @function currentCadesCert
  * @param {String} thumbprint значение сертификата
  * @throws {Error}
  * @description получает сертификат по thumbprint значению сертификата
  */
-CertificatesApi.currentCadesCert = async function currentCadesCert(thumbprint) {
+async function currentCadesCert(thumbprint) {
   try {
     if (!thumbprint) {
       throw new Error('Не указано thumbprint значение сертификата');
@@ -137,11 +143,11 @@ CertificatesApi.currentCadesCert = async function currentCadesCert(thumbprint) {
   } catch (error) {
     throw new Error(error.message);
   }
-};
+}
 
 /**
  * @async
- * @method getCert
+ * @function getCert
  * @param {String} thumbprint значение сертификата
  * @throws {Error}
  * @description
@@ -149,7 +155,7 @@ CertificatesApi.currentCadesCert = async function currentCadesCert(thumbprint) {
  * В отличие от currentCadesCert использует для поиска коллбек функцию getCertsList
  * С помощью этой функции в сертификате доступны методы из сertificateAdjuster
  */
-CertificatesApi.getCert = async function getCert(thumbprint) {
+async function getCert(thumbprint) {
   try {
     if (!thumbprint) {
       throw new Error('Не указано thumbprint значение сертификата');
@@ -157,7 +163,7 @@ CertificatesApi.getCert = async function getCert(thumbprint) {
       throw new Error('Не валидное значение thumbprint сертификата');
     }
 
-    const certList = await this.getCertsList();
+    const certList = await getCertsList();
 
     for (let index = 0; index < certList.length; index++) {
       if (thumbprint === certList[index].thumbprint) {
@@ -169,18 +175,18 @@ CertificatesApi.getCert = async function getCert(thumbprint) {
   } catch (error) {
     throw new Error(error.message);
   }
-};
+}
 
 /**
  * @async
- * @method signBase64
+ * @function signBase64
  * @param {String} thumbprint значение сертификата
  * @param {String} base64 строка в формате base64
  * @param {Boolean} type тип подписи true=откреплённая false=прикреплённая
  * @throws {Error}
  * @description подпись строки в формате base64
  */
-CertificatesApi.signBase64 = async function signBase64(thumbprint, base64, type = true) {
+async function signBase64(thumbprint, base64, type = true) {
   try {
     if (!thumbprint) {
       throw new Error('Не указано thumbprint значение сертификата');
@@ -191,7 +197,7 @@ CertificatesApi.signBase64 = async function signBase64(thumbprint, base64, type 
     const oAttrs = await cadescomMethods.oAtts();
     const oSignedData = await cadescomMethods.oSignedData();
     const oSigner = await cadescomMethods.oSigner();
-    const currentCert = await this.currentCadesCert(thumbprint);
+    const currentCert = await currentCadesCert(thumbprint);
     const authenticatedAttributes2 = await oSigner.AuthenticatedAttributes2;
 
     await oAttrs.propset_Name(CAPICOM_AUTHENTICATED_ATTRIBUTE_SIGNING_TIME);
@@ -206,23 +212,20 @@ CertificatesApi.signBase64 = async function signBase64(thumbprint, base64, type 
   } catch (error) {
     throw new Error(error.message);
   }
-};
+}
 
 /**
  * @async
- * @method signXml
+ * @function signXml
  * @param {String} thumbprint значение сертификата
  * @param {String} xml строка в формате XML
  * @param {Number} CADESCOM_XML_SIGNATURE_TYPE тип подписи 0=Вложенная 1=Оборачивающая 2=по шаблону @default 0
+ * @throws {Error}
  * @description подписание XML документа
  */
-CertificatesApi.signXml = async function signXml(
-  thumbprint,
-  xml,
-  cadescomXmlSignatureType = CADESCOM_XML_SIGNATURE_TYPE_ENVELOPED,
-) {
+async function signXml(thumbprint, xml, cadescomXmlSignatureType = CADESCOM_XML_SIGNATURE_TYPE_ENVELOPED) {
   try {
-    const currentCert = await this.currentCadesCert(thumbprint);
+    const currentCert = await currentCadesCert(thumbprint);
     const publicKey = await currentCert.PublicKey();
     const algorithm = await publicKey.Algorithm;
     const value = await algorithm.Value;
@@ -242,10 +245,17 @@ CertificatesApi.signXml = async function signXml(
   } catch (error) {
     throw new Error(error);
   }
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NOTE Exports
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-module.exports = CertificatesApi;
+module.exports = {
+  about,
+  getCertsList,
+  currentCadesCert,
+  getCert,
+  signXml,
+  signBase64,
+};
