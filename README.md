@@ -54,7 +54,7 @@ npm i cadesplugin-crypto-pro-api
 
 ### friendlyDate(date)
 
-Формирует дату от переданного пареметра
+Формирует дату от переданного параметра
 
 ### isValid()
 

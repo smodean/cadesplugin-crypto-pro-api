@@ -1,15 +1,15 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NOTE Object create
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @description объект, в котором собираются данные о сертификате и методы по работе с этими данными
  */
 const CertificateAdjuster = Object.create(null);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NOTE Methods
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @method init
@@ -19,14 +19,14 @@ const CertificateAdjuster = Object.create(null);
 CertificateAdjuster.init = function init(currentCert) {
   const { certApi, issuerInfo, privateKey, serialNumber, thumbprint, subjectInfo, validPeriod } = currentCert;
 
-    this.certApi = certApi;
-    this.issuerInfo = issuerInfo;
-    this.privateKey = privateKey;
-    this.serialNumber = serialNumber;
-    this.thumbprint = thumbprint;
-    this.subjectInfo = subjectInfo;
-    this.validPeriod = validPeriod;
-}
+  this.certApi = certApi;
+  this.issuerInfo = issuerInfo;
+  this.privateKey = privateKey;
+  this.serialNumber = serialNumber;
+  this.thumbprint = thumbprint;
+  this.subjectInfo = subjectInfo;
+  this.validPeriod = validPeriod;
+};
 
 /**
  * @method friendlyInfo
@@ -53,7 +53,7 @@ CertificateAdjuster.friendlyInfo = function friendlyInfo(subjectIssuer) {
   });
 
   return formedSubjectIssuerInfo;
-}
+};
 
 /**
  * @method friendlySubjectInfo
@@ -62,7 +62,7 @@ CertificateAdjuster.friendlyInfo = function friendlyInfo(subjectIssuer) {
  */
 CertificateAdjuster.friendlySubjectInfo = function friendlySubjectInfo() {
   return this.friendlyInfo('subjectInfo');
-}
+};
 
 /**
  * @method friendlyIssuerInfo
@@ -71,7 +71,7 @@ CertificateAdjuster.friendlySubjectInfo = function friendlySubjectInfo() {
  */
 CertificateAdjuster.friendlyIssuerInfo = function friendlyIssuerInfo() {
   return this.friendlyInfo('issuerInfo');
-}
+};
 
 /**
  * @method friendlyValidPeriod
@@ -84,8 +84,8 @@ CertificateAdjuster.friendlyValidPeriod = function friendlyValidPeriod() {
   return {
     from: this.friendlyDate(from),
     to: this.friendlyDate(to),
-  }
-}
+  };
+};
 
 /**
  * @method possibleInfo
@@ -137,7 +137,7 @@ CertificateAdjuster.possibleInfo = function possibleInfo(subjectIssuer) {
  * @function friendlyDate
  * @param {String} date строка с датой
  * @returns {Object}
- * @description формирует дату от переданного пареметра
+ * @description формирует дату от переданного параметра
  */
 CertificateAdjuster.friendlyDate = function friendlyDate(date) {
   const newDate = new Date(date);
@@ -148,7 +148,7 @@ CertificateAdjuster.friendlyDate = function friendlyDate(date) {
     ddmmyy: `${day}/${month}/${year}`,
     hhmmss: `${hours}:${minutes}:${seconds}`,
   };
-}
+};
 
 /**
  * @async
@@ -165,10 +165,10 @@ CertificateAdjuster.isValid = async function isValid() {
   } catch (error) {
     throw new Error(`Произошла ошибка при проверке валидности сертификата: ${error.message}`);
   }
-}
+};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NOTE Exports
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = CertificateAdjuster;

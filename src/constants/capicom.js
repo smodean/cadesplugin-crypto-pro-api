@@ -30,7 +30,8 @@ module.exports = {
    */
   CADESCOM_XML_SIGNATURE_TYPE_TEMPLATE: 2,
   /**
-   * @constant {Number} CAPICOM_CERTIFICATE_INCLUDE_CHAIN_EXCEPT_ROOT Сохраняет все сертификаты цепочки за исключением корневого.
+   * @constant {Number} CAPICOM_CERTIFICATE_INCLUDE_CHAIN_EXCEPT_ROOT
+   * Сохраняет все сертификаты цепочки за исключением корневого.
    */
   CAPICOM_CERTIFICATE_INCLUDE_CHAIN_EXCEPT_ROOT: 0,
   /**
@@ -84,7 +85,8 @@ module.exports = {
    */
   CAPICOM_CERTIFICATE_FIND_EXTENDED_PROPERTY: 6,
   /**
-   * @constant {Number} CAPICOM_CERTIFICATE_FIND_CERTIFICATE_POLICY Возвращает сертификаты, содержащие указанный OID политики.
+   * @constant {Number} CAPICOM_CERTIFICATE_FIND_CERTIFICATE_POLICY
+   * Возвращает сертификаты, содержащие указанный OID политики.
    */
   CAPICOM_CERTIFICATE_FIND_CERTIFICATE_POLICY: 8,
   /**
@@ -121,7 +123,8 @@ module.exports = {
    */
   CAPICOM_OID_OTHER: 0,
   /**
-   * @constant {Number} CAPICOM_OID_KEY_USAGE_EXTENSION Расширение сертификата, содержащее информацию о назначении открытого ключа.
+   * @constant {Number} CAPICOM_OID_KEY_USAGE_EXTENSION
+   * Расширение сертификата, содержащее информацию о назначении открытого ключа.
    */
   CAPICOM_OID_KEY_USAGE_EXTENSION: 10,
   /**
