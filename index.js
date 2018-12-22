@@ -2,8 +2,15 @@
 // NOTE Imports
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-require('./src/lib/cadesplugin_api');
-const CertificatesApi = require('./src/сertificatesApi');
+require("./src/lib/cadesplugin_api");
+const {
+  getCertsList,
+  getCert,
+  currentCadesCert,
+  signBase64,
+  signXml,
+  about
+} = require("./src/сertificatesApi");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NOTE cadesplugin await function
@@ -12,8 +19,6 @@ const CertificatesApi = require('./src/сertificatesApi');
 const cadespluginOnload = (async function cadespluginOnload() {
   try {
     await window.cadesplugin;
-
-    const { getCertsList, getCert, currentCadesCert, signBase64, signXml, about } = CertificatesApi;
 
     return {
       getCertsList,
