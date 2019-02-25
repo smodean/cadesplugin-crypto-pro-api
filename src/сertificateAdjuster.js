@@ -44,11 +44,12 @@ CertificateAdjuster.friendlyInfo = function friendlyInfo(subjectIssuer) {
   const _possibleInfo = this.possibleInfo(subjectIssuer);
   const formedSubjectIssuerInfo = subjectIssuerArr.map(tag => {
     const tagArr = tag.split('=');
-    tagArr[0] = `${tagArr[0]}=`;
+    const index = `${tagArr[0]}=`;
 
     return {
+      code: tagArr[0],
       text: tagArr[1],
-      value: _possibleInfo[tagArr[0]],
+      value: _possibleInfo[index],
     };
   });
 
