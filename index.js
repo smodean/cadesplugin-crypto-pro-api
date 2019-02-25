@@ -8,6 +8,7 @@ const {
   getCert,
   currentCadesCert,
   signBase64,
+  verifyBase64,
   signXml,
   about
 } = require("./src/сertificatesApi");
@@ -25,6 +26,7 @@ const cadespluginOnload = (async function cadespluginOnload() {
       getCert,
       currentCadesCert,
       signBase64,
+      verifyBase64,
       signXml,
       about,
     };
