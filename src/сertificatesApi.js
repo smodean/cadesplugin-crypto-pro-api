@@ -216,6 +216,29 @@ async function signBase64(thumbprint, base64, type = true) {
 
 /**
  * @async
+ * @function verifyBase64
+ * @param {String} signedMessage подпись
+ * @param {String} base64 строка в формате base64
+ * @throws {Error}
+ * @description проверка подписи строки в формате base64
+ * @returns {Boolean} true если проверка успешна
+ */
+async function verifyBase64(signedMessage, base64, type = true) {
+  try {
+    const oSignedData = await cadescomMethods.oSignedData();
+
+    await oSignedData.propset_ContentEncoding(CADESCOM_BASE64_TO_BINARY);
+    await oSignedData.propset_Content(base64);
+    await oSignedData.VerifyCades(signedMessage, CADESCOM_CADES_BES, type);
+
+    return true;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * @async
  * @function signXml
  * @param {String} thumbprint значение сертификата
  * @param {String} xml строка в формате XML
@@ -258,4 +281,5 @@ module.exports = {
   getCert,
   signXml,
   signBase64,
+  verifyBase64,
 };
